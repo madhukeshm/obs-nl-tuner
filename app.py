@@ -113,7 +113,7 @@ def _render_steps(steps: list[dict]) -> None:
 
 
 # --- full-bleed masthead --------------------------------------------------
-components.html(ui.header_component(__version__), height=150)
+components.html(ui.header_component(__version__), height=142)
 
 
 # --- padded body ----------------------------------------------------------
@@ -193,4 +193,4 @@ with st.container(key="bodywrap"):
 
 
 # --- full-bleed footer ----------------------------------------------------
-components.html(ui.footer_component(__version__), height=76)
+components.html(ui.footer_component(__version__), height=74)

@@ -67,13 +67,19 @@ def theme_css() -> str:
     --radius: 12px; --shadow: 0 6px 18px rgba(30,29,26,.06);
   }}
 
-  .stApp {{ background: var(--ivory); }}
+  .stApp, [data-testid="stMain"] {{ background: var(--ivory); }}
   html, body, [data-testid="stAppViewContainer"], .stMarkdown, p, li, label, input, textarea, button {{
     font-family: "Hanken Grotesk", system-ui, sans-serif; color: var(--ink);
   }}
-  /* full-bleed banners: remove container gutters; body content re-pads itself */
-  .block-container {{ padding: 0 !important; max-width: 1000px; }}
-  .st-key-bodywrap {{ padding: 8px clamp(18px, 4vw, 52px) 0; }}
+  /* full-bleed banners + sticky footer: the main column fills the viewport height,
+     banners span its full width, the body re-centers itself, and the last child
+     (footer) is pushed to the bottom. */
+  .block-container {{ padding: 0 !important; max-width: 100% !important;
+    min-height: 100vh; display: flex; flex-direction: column; }}
+  .block-container > [data-testid="stVerticalBlock"] {{ flex: 1 1 auto; }}
+  .block-container > [data-testid="stVerticalBlock"] > *:last-child {{ margin-top: auto; }}
+  .st-key-bodywrap {{ max-width: 980px; width: 100%; margin: 0 auto;
+    padding: 16px clamp(20px, 5vw, 40px) 30px; }}
 
   #MainMenu, [data-testid="stToolbar"], [data-testid="stDecoration"] {{ display: none !important; }}
   [data-testid="stHeader"] {{ background: transparent; height: 0; }}
@@ -136,9 +142,10 @@ _BANNER_HEAD = f"""
 {_FONTS_LINK}
 <style>
   * {{ box-sizing: border-box; }}
-  html, body {{ margin: 0; background: transparent; font-family: "Hanken Grotesk", system-ui, sans-serif; }}
+  html, body {{ margin: 0; height: 100%; background: transparent; font-family: "Hanken Grotesk", system-ui, sans-serif; }}
   .bar {{ background: linear-gradient(180deg, {INK} 0%, {INK_2} 100%); color: {IVORY};
-          padding: 0 clamp(18px, 4vw, 52px); position: relative; }}
+          padding: 0; position: relative; min-height: 100%; display: flex; align-items: center; }}
+  .inner {{ max-width: 980px; width: 100%; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px); }}
   .bar::before {{ content:""; position:absolute; left:0; right:0; top:0; height:3px;
           background: linear-gradient(90deg, {ACCENT_ON_DARK}, transparent 62%); }}
   .eyebrow {{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.22em;
@@ -153,21 +160,23 @@ _BANNER_HEAD = f"""
 
 
 def header_component(version: str) -> str:
-    """Full-bleed dark masthead."""
+    """Full-bleed dark masthead (background bleeds edge-to-edge, content aligned to body)."""
     return f"""{_BANNER_HEAD}
-<div class="bar" style="display:flex;align-items:center;justify-content:space-between;gap:20px;
-     padding-top:22px;padding-bottom:22px;">
-  <div>
-    <div class="eyebrow">Studio control · obs-websocket v5</div>
-    <div class="wordmark" style="font-size:34px;line-height:1.05;margin-top:5px;">OBS&nbsp;Tuner</div>
-    <div class="muted" style="font-size:14.5px;margin-top:4px;">
-      Natural-language control for OBS Studio — powered by Claude or ChatGPT.</div>
-  </div>
-  <div style="text-align:right;flex:0 0 auto;">
-    <div class="mono" style="font-size:12px;color:#b8b1a2;">v{version}</div>
-    <div class="mono" style="font-size:12.5px;color:#c9c2b3;margin-top:10px;">
-      <span class="dot" style="background:{CLAUDE};"></span>Claude<br>
-      <span class="dot" style="background:{CHATGPT};"></span>ChatGPT</div>
+<div class="bar">
+  <div class="inner" style="display:flex;align-items:center;justify-content:space-between;gap:20px;
+       padding-top:22px;padding-bottom:22px;">
+    <div>
+      <div class="eyebrow">Studio control · obs-websocket v5</div>
+      <div class="wordmark" style="font-size:34px;line-height:1.05;margin-top:5px;">OBS&nbsp;Tuner</div>
+      <div class="muted" style="font-size:14.5px;margin-top:4px;">
+        Natural-language control for OBS Studio — powered by Claude or ChatGPT.</div>
+    </div>
+    <div style="text-align:right;flex:0 0 auto;">
+      <div class="mono" style="font-size:12px;color:#b8b1a2;">v{version}</div>
+      <div class="mono" style="font-size:12.5px;color:#c9c2b3;margin-top:10px;">
+        <span class="dot" style="background:{CLAUDE};"></span>Claude<br>
+        <span class="dot" style="background:{CHATGPT};"></span>ChatGPT</div>
+    </div>
   </div>
 </div>
 """
@@ -176,16 +185,18 @@ def header_component(version: str) -> str:
 def footer_component(version: str) -> str:
     """Full-bleed dark footer, matching the masthead."""
     return f"""{_BANNER_HEAD}
-<div class="bar" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-     padding-top:20px;padding-bottom:20px;">
-  <div>
-    <span class="wordmark" style="font-size:16px;">OBS Tuner</span>
-    <span class="muted" style="font-size:13px;margin-left:10px;">© {YEAR} {AUTHOR}</span>
-  </div>
-  <div class="mono" style="font-size:12.5px;color:#b8b1a2;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-    <span>MIT License</span><span style="color:#4a473f;">·</span>
-    <span>v{version}</span><span style="color:#4a473f;">·</span>
-    <a href="{REPO_URL}" target="_blank" rel="noopener">GitHub ↗</a>
+<div class="bar">
+  <div class="inner" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+       padding-top:20px;padding-bottom:20px;">
+    <div>
+      <span class="wordmark" style="font-size:16px;">OBS Tuner</span>
+      <span class="muted" style="font-size:13px;margin-left:10px;">© {YEAR} {AUTHOR}</span>
+    </div>
+    <div class="mono" style="font-size:12.5px;color:#b8b1a2;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+      <span>MIT License</span><span style="color:#4a473f;">·</span>
+      <span>v{version}</span><span style="color:#4a473f;">·</span>
+      <a href="{REPO_URL}" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
   </div>
 </div>
 """
