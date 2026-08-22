@@ -8,93 +8,149 @@
   body {
     font-family: -apple-system, "Segoe UI", "Inter", Roboto, sans-serif;
     background:
-      radial-gradient(900px 500px at 82% -8%, rgba(124,109,242,.28), transparent 60%),
-      radial-gradient(700px 460px at 8% 112%, rgba(16,163,127,.18), transparent 60%),
+      radial-gradient(900px 500px at 82% -8%, rgba(124,109,242,.30), transparent 60%),
+      radial-gradient(700px 460px at 8% 112%, rgba(16,163,127,.16), transparent 60%),
       linear-gradient(160deg, #0d1220 0%, #121a2e 55%, #0b0f1b 100%);
-    color: #eef2fb;
-    overflow: hidden;
-    position: relative;
+    color: #eef2fb; overflow: hidden; position: relative;
   }
-  /* faint grid */
   body::before {
     content: ""; position: absolute; inset: 0;
     background-image:
       linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
     background-size: 40px 40px;
-    mask-image: radial-gradient(1000px 600px at 50% 40%, #000 30%, transparent 80%);
+    mask-image: radial-gradient(1000px 600px at 40% 40%, #000 30%, transparent 80%);
   }
-  .wrap { position: relative; height: 100%; padding: 64px 72px; display: flex; flex-direction: column; }
+  .grid { position: relative; height: 100%; display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; }
+  .left { padding: 0 0 0 72px; }
   .kicker {
     display: inline-flex; align-items: center; gap: 10px;
-    font-size: 15px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
-    color: #9fb0d6;
+    font-size: 15px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #a6b4d8;
   }
   .kicker .dot { width: 9px; height: 9px; border-radius: 50%; background: #7c6df2; box-shadow: 0 0 14px #7c6df2; }
   h1 {
-    margin-top: 26px;
-    font-size: 74px; line-height: 1.02; font-weight: 800; letter-spacing: -.02em;
-    background: linear-gradient(92deg, #ffffff 30%, #c9d3ef 100%);
+    margin-top: 22px; font-size: 68px; line-height: 1.02; font-weight: 800; letter-spacing: -.02em;
+    background: linear-gradient(92deg, #ffffff 32%, #c9d3ef 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .sub { margin-top: 20px; font-size: 27px; color: #b7c2df; font-weight: 500; max-width: 720px; }
+  .sub { margin-top: 20px; font-size: 24px; color: #b7c2df; font-weight: 500; max-width: 460px; line-height: 1.4; }
   .sub b { color: #fff; font-weight: 700; }
-
-  .demo { margin-top: auto; display: flex; align-items: center; gap: 26px; }
-  .bubble {
-    background: rgba(20,27,46,.82); border: 1px solid rgba(255,255,255,.10);
-    border-radius: 16px; padding: 18px 22px; box-shadow: 0 20px 50px rgba(0,0,0,.45);
-    backdrop-filter: blur(4px); flex: 0 0 auto;
-  }
-  .bubble .who { font-size: 13px; color: #8a97ba; margin-bottom: 8px; letter-spacing: .04em; }
-  .bubble .msg { font-family: "SF Mono", Menlo, monospace; font-size: 20px; color: #eaf0ff; }
-  .arrow { font-size: 34px; color: #7c6df2; filter: drop-shadow(0 0 10px rgba(124,109,242,.7)); }
-  .applied { display: flex; flex-direction: column; gap: 10px; }
-  .chip {
-    display: flex; align-items: center; gap: 11px; font-size: 18px; color: #d9e2f7;
-    background: rgba(16,163,127,.10); border: 1px solid rgba(16,163,127,.35);
-    border-radius: 11px; padding: 9px 15px;
-  }
-  .chip .tick { color: #23c495; font-weight: 800; }
-
-  .foot {
-    position: absolute; right: 72px; bottom: 60px;
-    display: flex; align-items: center; gap: 18px;
-  }
-  .providers { display: flex; align-items: center; gap: 12px; }
+  .pills { margin-top: 30px; display: flex; align-items: center; gap: 11px; }
   .pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 16px; font-weight: 600; color: #cdd6ee;
-    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
-    padding: 8px 14px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #cdd6ee;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); padding: 7px 13px; border-radius: 999px;
   }
   .pill .d { width: 10px; height: 10px; border-radius: 50%; }
-  .repo { font-family: "SF Mono", Menlo, monospace; font-size: 15px; color: #7f8db1; }
+  .art { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
+  svg { width: 560px; height: 560px; overflow: visible; }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <span class="kicker"><span class="dot"></span>Open source · MIT · obs-websocket v5</span>
-    <h1>OBS Natural-Language<br>Tuner</h1>
-    <p class="sub">Describe what you want. <b>Claude</b> or <b>ChatGPT</b> tunes OBS Studio for you — no menus, no filter graphs.</p>
-
-    <div class="demo">
-      <div class="bubble">
-        <div class="who">you type</div>
-        <div class="msg">"clean up my mic&nbsp;&amp;<br>make it 1080p60"</div>
-      </div>
-      <div class="arrow">➜</div>
-      <div class="applied">
-        <div class="chip"><span class="tick">✓</span> Noise&nbsp;Suppression · Gate · EQ</div>
-        <div class="chip"><span class="tick">✓</span> Output&nbsp;1920×1080 @ 60fps</div>
-      </div>
-    </div>
-
-    <div class="foot">
-      <div class="providers">
+  <div class="grid">
+    <div class="left">
+      <span class="kicker"><span class="dot"></span>Open source · MIT · obs-websocket v5</span>
+      <h1>OBS Natural-<br>Language Tuner</h1>
+      <p class="sub">Describe what you want. <b>Claude</b> or <b>ChatGPT</b> tunes OBS for you.</p>
+      <div class="pills">
         <span class="pill"><span class="d" style="background:#d97757;box-shadow:0 0 10px #d97757"></span>Claude</span>
         <span class="pill"><span class="d" style="background:#10a37f;box-shadow:0 0 10px #10a37f"></span>ChatGPT</span>
       </div>
+    </div>
+
+    <div class="art">
+      <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="mic" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#9d90ff"/>
+            <stop offset="1" stop-color="#6d5cf2"/>
+          </linearGradient>
+          <linearGradient id="micdark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7c6df2"/>
+            <stop offset="1" stop-color="#5b4ae0"/>
+          </linearGradient>
+          <radialGradient id="spot" cx="50%" cy="45%" r="55%">
+            <stop offset="0" stop-color="#ffffff" stop-opacity=".14"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="wand" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffd97a"/>
+            <stop offset="1" stop-color="#f5b64b"/>
+          </linearGradient>
+        </defs>
+
+        <!-- stage spotlight -->
+        <ellipse cx="280" cy="270" rx="250" ry="205" fill="url(#spot)"/>
+        <ellipse cx="280" cy="452" rx="150" ry="30" fill="#000" opacity=".22"/>
+
+        <!-- speech bubble -->
+        <g>
+          <rect x="24" y="70" width="196" height="74" rx="24" fill="#141b2e" stroke="#efeaff" stroke-width="4"/>
+          <path d="M70 142 L60 178 L104 146 Z" fill="#141b2e" stroke="#efeaff" stroke-width="4" stroke-linejoin="round"/>
+          <text x="46" y="104" font-family="'SF Mono',Menlo,monospace" font-size="20" fill="#eaf0ff">"clean up</text>
+          <text x="46" y="130" font-family="'SF Mono',Menlo,monospace" font-size="20" fill="#eaf0ff">my mic"</text>
+        </g>
+
+        <!-- ==== noise (before) : jagged, dissolving ==== -->
+        <g stroke="#ff8a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <path d="M70 300 l16 -30 l16 34 l16 -40 l16 42 l16 -26" opacity=".9"/>
+          <path d="M96 356 l14 -22 l14 24 l14 -26" opacity=".5"/>
+        </g>
+        <circle cx="86" cy="250" r="8" fill="#ff8a5c" opacity=".7"/>
+        <circle cx="150" cy="360" r="6" fill="#ff8a5c" opacity=".45"/>
+
+        <!-- ==== clean wave (after) : smooth ==== -->
+        <path d="M392 296 q22 -46 44 0 q22 46 44 0 q22 -46 44 0" stroke="#34d3a6" stroke-width="8"
+              stroke-linecap="round" fill="none"/>
+        <path d="M405 340 q18 -30 36 0 q18 30 36 0" stroke="#34d3a6" stroke-width="6" stroke-linecap="round" fill="none" opacity=".55"/>
+
+        <!-- ==== microphone character ==== -->
+        <g stroke="#efeaff" stroke-width="6" stroke-linejoin="round">
+          <!-- base + stand -->
+          <ellipse cx="280" cy="452" rx="92" ry="22" fill="#3a3168"/>
+          <rect x="266" y="360" width="28" height="80" rx="10" fill="#4a3f86"/>
+          <!-- body -->
+          <rect x="205" y="150" width="150" height="228" rx="72" fill="url(#mic)"/>
+          <!-- grille panel -->
+          <rect x="224" y="172" width="112" height="96" rx="46" fill="url(#micdark)" stroke="none"/>
+        </g>
+        <!-- grille lines -->
+        <g stroke="#efeaff" stroke-width="4.5" stroke-linecap="round" opacity=".55">
+          <line x1="238" y1="196" x2="322" y2="196"/>
+          <line x1="234" y1="216" x2="326" y2="216"/>
+          <line x1="238" y1="236" x2="322" y2="236"/>
+        </g>
+        <!-- face -->
+        <g>
+          <ellipse cx="256" cy="312" rx="15" ry="17" fill="#fff"/>
+          <ellipse cx="304" cy="312" rx="15" ry="17" fill="#fff"/>
+          <circle cx="259" cy="315" r="7" fill="#241a4d"/>
+          <circle cx="307" cy="315" r="7" fill="#241a4d"/>
+          <circle cx="256.5" cy="311" r="2.4" fill="#fff"/>
+          <circle cx="304.5" cy="311" r="2.4" fill="#fff"/>
+          <!-- blush -->
+          <ellipse cx="234" cy="336" rx="12" ry="7" fill="#ff9ec2" opacity=".85"/>
+          <ellipse cx="326" cy="336" rx="12" ry="7" fill="#ff9ec2" opacity=".85"/>
+          <!-- smile -->
+          <path d="M262 340 q18 22 36 0" stroke="#241a4d" stroke-width="6" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- ==== AI sparkle wand ==== -->
+        <g stroke="#efeaff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+          <line x1="470" y1="120" x2="410" y2="176" stroke="url(#wand)" stroke-width="12"/>
+          <path d="M400 150 l10 22 l24 6 l-18 17 l4 25 l-22 -12 l-22 12 l4 -25 l-18 -17 l24 -6 z"
+                fill="url(#wand)"/>
+        </g>
+
+        <!-- sparkles -->
+        <g fill="#fff">
+          <path d="M360 210 l4 12 l12 4 l-12 4 l-4 12 l-4 -12 l-12 -4 l12 -4 z" opacity=".95"/>
+          <path d="M338 268 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3 z" opacity=".8"/>
+          <path d="M392 250 l2.5 7 l7 2.5 l-7 2.5 l-2.5 7 l-2.5 -7 l-7 -2.5 l7 -2.5 z" opacity=".7"/>
+        </g>
+        <g fill="#9d90ff">
+          <path d="M150 210 l3 9 l9 3 l-9 3 l-3 9 l-3 -9 l-9 -3 l9 -3 z" opacity=".9"/>
+        </g>
+      </svg>
     </div>
   </div>
 </body>
