@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1400px; height: 860px; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Inter", Roboto, sans-serif;
+    background:
+      radial-gradient(1000px 560px at 50% -10%, rgba(124,109,242,.18), transparent 60%),
+      linear-gradient(165deg, #0d1220 0%, #121a2e 60%, #0b0f1b 100%);
+    color: #eef2fb; overflow: hidden; position: relative;
+  }
+  body::before {
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(1100px 700px at 50% 45%, #000 35%, transparent 82%);
+  }
+  .wrap { position: relative; padding: 54px 60px; height: 100%; display: flex; flex-direction: column; }
+  .title { font-size: 40px; font-weight: 800; letter-spacing: -.02em; }
+  .title .accent { color: #9d90ff; }
+  .lead { margin-top: 12px; font-size: 20px; color: #aab6d8; max-width: 980px; }
+
+  .pipe { margin-top: 48px; display: flex; align-items: stretch; gap: 0; }
+  .stage {
+    flex: 1; background: rgba(19,26,44,.75); border: 1px solid rgba(255,255,255,.10);
+    border-radius: 16px; padding: 22px 18px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.35); position: relative;
+  }
+  .stage .ic { font-size: 34px; line-height: 1; }
+  .stage .nm { font-size: 20px; font-weight: 700; }
+  .stage .sm { font-size: 14px; color: #93a1c6; line-height: 1.35; }
+  .stage.you   { background: linear-gradient(180deg, rgba(124,109,242,.20), rgba(19,26,44,.75)); border-color: rgba(124,109,242,.45); }
+  .stage.llm   { background: linear-gradient(180deg, rgba(217,119,87,.14), rgba(16,163,127,.12) 70%, rgba(19,26,44,.75)); border-color: rgba(255,255,255,.18); }
+  .stage.obs   { background: linear-gradient(180deg, rgba(41,45,224,.20), rgba(19,26,44,.75)); border-color: rgba(90,96,240,.5); }
+  .conn { flex: 0 0 46px; display: flex; align-items: center; justify-content: center; color: #6f7ca6; font-size: 26px; }
+
+  .providers { display:flex; gap:8px; margin-top:2px; }
+  .prov { font-size:12.5px; font-weight:700; padding:3px 9px; border-radius:999px; }
+  .prov.c { color:#f0c3b0; background:rgba(217,119,87,.18); border:1px solid rgba(217,119,87,.5);}
+  .prov.o { color:#a9e6d3; background:rgba(16,163,127,.16); border:1px solid rgba(16,163,127,.5);}
+
+  /* loop banner under LLM<->tools */
+  .loop {
+    margin: 26px auto 0; width: 620px; text-align:center;
+    border: 1px dashed rgba(157,144,255,.55); border-radius: 12px;
+    padding: 12px 18px; color: #c6cdf0; font-size: 16px;
+    background: rgba(124,109,242,.08);
+  }
+  .loop b { color:#fff; }
+  .loop .mono { font-family:"SF Mono", Menlo, monospace; color:#9d90ff; }
+
+  .caps { margin-top: auto; display: flex; gap: 16px; }
+  .cap {
+    flex: 1; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.10);
+    border-radius: 14px; padding: 18px 20px;
+  }
+  .cap .h { display:flex; align-items:center; gap:10px; font-size: 18px; font-weight: 700; }
+  .cap .b { margin-top: 8px; font-size: 14.5px; color: #93a1c6; line-height: 1.45; }
+  .cap .lock { font-size: 12px; color:#e0b15a; margin-left:auto; font-weight:700; letter-spacing:.03em;}
+
+  .foot { position:absolute; right:60px; bottom:26px; font-family:"SF Mono",Menlo,monospace; font-size:14px; color:#6c799d; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">How it works — <span class="accent">natural language → OBS</span></div>
+    <div class="lead">The model is handed a catalogue of well-defined OBS tools and picks which to call. One tool set, driven identically by either provider, over a protocol-accurate obs-websocket layer.</div>
+
+    <div class="pipe">
+      <div class="stage you">
+        <div class="ic">💬</div>
+        <div class="nm">You</div>
+        <div class="sm">Plain-English<br>request</div>
+      </div>
+      <div class="conn">→</div>
+      <div class="stage">
+        <div class="ic">🎈</div>
+        <div class="nm">Streamlit UI</div>
+        <div class="sm">Chat, connection<br>&amp; step log</div>
+      </div>
+      <div class="conn">→</div>
+      <div class="stage llm">
+        <div class="ic">🧠</div>
+        <div class="nm">LLM + tools</div>
+        <div class="providers"><span class="prov c">Claude</span><span class="prov o">ChatGPT</span></div>
+        <div class="sm">Chooses tools<br>via tool-calling</div>
+      </div>
+      <div class="conn">→</div>
+      <div class="stage">
+        <div class="ic">🧰</div>
+        <div class="nm">OBSController</div>
+        <div class="sm">Thin, protocol-exact<br>action layer</div>
+      </div>
+      <div class="conn">→</div>
+      <div class="stage obs">
+        <div class="ic">🎥</div>
+        <div class="nm">OBS Studio</div>
+        <div class="sm">via obs-websocket v5<br>(port 4455)</div>
+      </div>
+    </div>
+
+    <div class="loop">↻ <b>Agentic loop:</b> <span class="mono">model calls tool → OBS executes → result returns → model continues</span> until done</div>
+
+    <div class="caps">
+      <div class="cap">
+        <div class="h">🎙️ Audio</div>
+        <div class="b">Noise suppression, gate, compressor, EQ, gain, volume, mute — idempotent filter chain.</div>
+      </div>
+      <div class="cap">
+        <div class="h">🖥️ Video</div>
+        <div class="b">Base &amp; output resolution and frame rate.</div>
+      </div>
+      <div class="cap">
+        <div class="h">🎬 Scenes &amp; sources</div>
+        <div class="b">Create / switch scenes, add sources, show &amp; hide items.</div>
+      </div>
+      <div class="cap">
+        <div class="h">📡 Streaming <span class="lock">OPT-IN 🔒</span></div>
+        <div class="b">Service &amp; key, encoder/bitrate, start &amp; stop stream / recording.</div>
+      </div>
+    </div>
+
+    <div class="foot">github.com/madhukeshm/obs-nl-tuner</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Inter", Roboto, sans-serif;
+    background:
+      radial-gradient(900px 500px at 82% -8%, rgba(124,109,242,.28), transparent 60%),
+      radial-gradient(700px 460px at 8% 112%, rgba(16,163,127,.18), transparent 60%),
+      linear-gradient(160deg, #0d1220 0%, #121a2e 55%, #0b0f1b 100%);
+    color: #eef2fb;
+    overflow: hidden;
+    position: relative;
+  }
+  /* faint grid */
+  body::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(1000px 600px at 50% 40%, #000 30%, transparent 80%);
+  }
+  .wrap { position: relative; height: 100%; padding: 64px 72px; display: flex; flex-direction: column; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: #9fb0d6;
+  }
+  .kicker .dot { width: 9px; height: 9px; border-radius: 50%; background: #7c6df2; box-shadow: 0 0 14px #7c6df2; }
+  h1 {
+    margin-top: 26px;
+    font-size: 74px; line-height: 1.02; font-weight: 800; letter-spacing: -.02em;
+    background: linear-gradient(92deg, #ffffff 30%, #c9d3ef 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub { margin-top: 20px; font-size: 27px; color: #b7c2df; font-weight: 500; max-width: 720px; }
+  .sub b { color: #fff; font-weight: 700; }
+
+  .demo { margin-top: auto; display: flex; align-items: center; gap: 26px; }
+  .bubble {
+    background: rgba(20,27,46,.82); border: 1px solid rgba(255,255,255,.10);
+    border-radius: 16px; padding: 18px 22px; box-shadow: 0 20px 50px rgba(0,0,0,.45);
+    backdrop-filter: blur(4px); flex: 0 0 auto;
+  }
+  .bubble .who { font-size: 13px; color: #8a97ba; margin-bottom: 8px; letter-spacing: .04em; }
+  .bubble .msg { font-family: "SF Mono", Menlo, monospace; font-size: 20px; color: #eaf0ff; }
+  .arrow { font-size: 34px; color: #7c6df2; filter: drop-shadow(0 0 10px rgba(124,109,242,.7)); }
+  .applied { display: flex; flex-direction: column; gap: 10px; }
+  .chip {
+    display: flex; align-items: center; gap: 11px; font-size: 18px; color: #d9e2f7;
+    background: rgba(16,163,127,.10); border: 1px solid rgba(16,163,127,.35);
+    border-radius: 11px; padding: 9px 15px;
+  }
+  .chip .tick { color: #23c495; font-weight: 800; }
+
+  .foot {
+    position: absolute; right: 72px; bottom: 60px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .providers { display: flex; align-items: center; gap: 12px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 16px; font-weight: 600; color: #cdd6ee;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+    padding: 8px 14px; border-radius: 999px;
+  }
+  .pill .d { width: 10px; height: 10px; border-radius: 50%; }
+  .repo { font-family: "SF Mono", Menlo, monospace; font-size: 15px; color: #7f8db1; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <span class="kicker"><span class="dot"></span>Open source · MIT · obs-websocket v5</span>
+    <h1>OBS Natural-Language<br>Tuner</h1>
+    <p class="sub">Describe what you want. <b>Claude</b> or <b>ChatGPT</b> tunes OBS Studio for you — no menus, no filter graphs.</p>
+
+    <div class="demo">
+      <div class="bubble">
+        <div class="who">you type</div>
+        <div class="msg">"clean up my mic&nbsp;&amp;<br>make it 1080p60"</div>
+      </div>
+      <div class="arrow">➜</div>
+      <div class="applied">
+        <div class="chip"><span class="tick">✓</span> Noise&nbsp;Suppression · Gate · EQ</div>
+        <div class="chip"><span class="tick">✓</span> Output&nbsp;1920×1080 @ 60fps</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="providers">
+        <span class="pill"><span class="d" style="background:#d97757;box-shadow:0 0 10px #d97757"></span>Claude</span>
+        <span class="pill"><span class="d" style="background:#10a37f;box-shadow:0 0 10px #10a37f"></span>ChatGPT</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

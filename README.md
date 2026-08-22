@@ -1,5 +1,7 @@
 # 🎛️ OBS Natural-Language Tuner
 
+![OBS Natural-Language Tuner](./assets/header.png)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
 [![Built with Streamlit](https://img.shields.io/badge/built%20with-Streamlit-ff4b4b.svg)](https://streamlit.io/)
@@ -14,19 +16,13 @@ v5** — no menus, no filter graphs, no docs-diving.
 > *"Make a 'Starting Soon' scene and switch to it."*
 > *"Lower the desktop audio by 6 dB."*
 
+📖 **Background:** [*Tuning OBS by Just Asking*](./docs/medium-article.md) — the why and how behind the project.
+
 ---
 
 ## How it works
 
-```
-You (natural language)
-   │
-   ▼
-Streamlit UI  ──►  LLM (Claude or ChatGPT) with a catalogue of OBS "tools"
-                        │  the model picks + calls tools
-                        ▼
-                 obs_tune.tools  ──►  OBSController  ──►  obs-websocket v5  ──►  OBS
-```
+![Architecture](./assets/architecture.png)
 
 Instead of asking a model to emit raw config JSON (fragile), the model is given
 a set of well-defined OBS **functions** and uses native **tool calling** to
