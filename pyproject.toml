@@ -1,0 +1,24 @@
+[project]
+name = "obs-tune"
+version = "0.1.0"
+description = "Tune OBS Studio with natural language, powered by Claude or ChatGPT and obs-websocket v5."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Madhukesh Manevarthe" }]
+keywords = ["obs", "obs-studio", "obs-websocket", "streamlit", "claude", "chatgpt", "llm", "tool-calling"]
+dependencies = [
+    "anthropic>=0.69",
+    "obsws-python>=1.7",
+    "openai>=1.55",
+    "python-dotenv>=1.2.3",
+    "streamlit>=1.62.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/madhukeshm/obs-nl-tuner"
+Repository = "https://github.com/madhukeshm/obs-nl-tuner"
+Issues = "https://github.com/madhukeshm/obs-nl-tuner/issues"
+
+[tool.setuptools]
+packages = ["obs_tune"]
