@@ -1,10 +1,10 @@
 # App theme. Custom CSS in obs_tune/ui.py layers on top of this base.
 [theme]
 base = "light"
-primaryColor = "#5b4ae0"
-backgroundColor = "#f7f4ff"
-secondaryBackgroundColor = "#f1ecff"
-textColor = "#201a33"
+primaryColor = "#1F6E5B"
+backgroundColor = "#F5F1E7"
+secondaryBackgroundColor = "#EFEADB"
+textColor = "#1E1D1A"
 font = "sans serif"
 
 [client]

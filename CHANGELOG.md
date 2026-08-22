@@ -14,10 +14,12 @@ First stable release.
 - Tool coverage: audio filters (noise suppression, gate, compressor, EQ, gain),
   volume/mute, video resolution & fps, scenes/sources, and opt-in
   streaming/recording (service, encoder/bitrate, start/stop).
-- **Overhauled studio UI**: dark hero banner with a cartoon microphone mascot,
-  rounded sticker-style cards, custom chat avatars, clickable starter prompts,
-  styled action-step cards, connection status pill, and a copyright footer.
-- Light theme pinned via `.streamlit/config.toml`.
+- **Professional studio UI**: an ivory canvas with warm-ink text and a single
+  deep-teal accent, full-bleed dark banners at the top (masthead) and bottom
+  (footer), clickable starting-point prompts, styled action-step cards, a
+  connection status pill, and a copyright footer. Type is shared with the
+  project writeup (Fraunces / Hanken Grotesk / JetBrains Mono).
+- Ivory base theme pinned via `.streamlit/config.toml`.
 - Project header image, architecture diagram, and a Medium-style writeup.
 
 ### Notes
