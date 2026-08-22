@@ -18,6 +18,8 @@ v5** — no menus, no filter graphs, no docs-diving.
 
 📖 **Background:** [*Tuning OBS by Just Asking*](./docs/medium-article.md) — the why and how behind the project.
 
+![The app](./assets/screenshot.png)
+
 ---
 
 ## How it works

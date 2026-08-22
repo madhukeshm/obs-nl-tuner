@@ -10,16 +10,23 @@ import os
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 from dotenv import load_dotenv
 
+from obs_tune import __version__
 from obs_tune.agents import CLAUDE_MODELS, OPENAI_MODELS, run_agent
 from obs_tune.obs_actions import OBSController, OBSError
+from obs_tune import ui
 
 load_dotenv()
 
-st.set_page_config(page_title="OBS Natural-Language Tuner", page_icon="🎛️", layout="centered")
+st.set_page_config(page_title="OBS Tuner", page_icon="🎛️", layout="centered")
+st.html(ui.theme_css())
 
 OBS_WS_CONFIG = Path.home() / "Library/Application Support/obs-studio/plugin_config/obs-websocket/config.json"
+
+ASSISTANT_AVATAR = "🎙️"
+USER_AVATAR = "🧑‍💻"
 
 
 def _default_obs_password() -> str:
@@ -37,6 +44,7 @@ ss.setdefault("obs_info", None)
 ss.setdefault("transcript", [])          # UI-facing list of {role, text, steps}
 ss.setdefault("history_claude", [])       # Anthropic-native messages
 ss.setdefault("history_openai", [])       # OpenAI-native messages
+ss.setdefault("pending_prompt", None)     # set by example chips
 
 
 def _connect(host: str, port: int, password: str) -> None:
@@ -49,25 +57,23 @@ def _connect(host: str, port: int, password: str) -> None:
 
 # --- sidebar --------------------------------------------------------------
 with st.sidebar:
-    st.header("🔌 OBS connection")
+    st.markdown("### 🔌 OBS connection")
     host = st.text_input("Host", value="localhost")
     port = st.number_input("Port", value=4455, step=1)
     password = st.text_input("Password", value=_default_obs_password(), type="password")
-    if st.button("Connect", use_container_width=True):
+    if st.button("Connect", use_container_width=True, type="primary"):
         try:
             _connect(host, int(port), password)
-            st.success(f"Connected — OBS {ss.obs_info.get('obsVersion')}")
+            st.toast(f"Connected to OBS {ss.obs_info.get('obsVersion')}", icon="✅")
         except OBSError as e:
             ss.controller = None
             st.error(str(e))
 
-    if ss.controller is not None and ss.obs_info:
-        st.caption(f"● Connected to OBS {ss.obs_info.get('obsVersion')}")
-    else:
-        st.caption("○ Not connected")
+    connected = ss.controller is not None and ss.obs_info is not None
+    vtext = f"OBS {ss.obs_info.get('obsVersion')}" if connected else ""
+    st.markdown(ui.conn_pill_html(connected, vtext), unsafe_allow_html=True)
 
-    st.divider()
-    st.header("🤖 Model")
+    st.markdown("### 🤖 Model")
     provider_label = st.radio("Provider", ["Claude (Anthropic)", "ChatGPT (OpenAI)"], index=0)
     provider = "claude" if provider_label.startswith("Claude") else "openai"
 
@@ -82,33 +88,22 @@ with st.sidebar:
             "OpenAI API key", value=os.getenv("OPENAI_API_KEY", ""), type="password"
         )
 
-    st.divider()
+    st.markdown("### 🎚️ Options")
     allow_streaming = st.toggle(
         "Allow streaming / recording controls",
         value=False,
         help="When on, the assistant may start/stop the stream or recording, change the "
         "stream service/key, and change encoder/bitrate. Off by default for safety.",
     )
-    if st.button("Clear conversation", use_container_width=True):
+    if st.button("🧹 Clear conversation", use_container_width=True):
         ss.transcript = []
         ss.history_claude = []
         ss.history_openai = []
         st.rerun()
 
 
-# --- main -----------------------------------------------------------------
-st.title("🎛️ OBS Natural-Language Tuner")
-st.caption("Describe what you want; Claude or ChatGPT configures OBS for you over obs-websocket.")
-
-if ss.controller is None:
-    st.info("Connect to OBS in the sidebar to begin.")
-    st.markdown(
-        "**Try things like:**\n"
-        "- *Clean up my mic — remove background noise*\n"
-        "- *Set my output to 1080p at 60fps*\n"
-        "- *Make a scene called 'Starting Soon' and switch to it*\n"
-        "- *Lower the desktop audio by 6 dB*"
-    )
+# --- hero -----------------------------------------------------------------
+components.html(ui.hero_component(__version__), height=196)
 
 
 def _render_steps(steps: list[dict]) -> None:
@@ -124,29 +119,51 @@ def _render_steps(steps: list[dict]) -> None:
                 st.code(s["result"])
 
 
-# Replay transcript
+def _avatar(role: str) -> str:
+    return ASSISTANT_AVATAR if role == "assistant" else USER_AVATAR
+
+
+# --- empty state + starter chips -----------------------------------------
+if not ss.transcript:
+    components.html(ui.empty_component(), height=250)
+    st.markdown(
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:.14em;'
+        'text-transform:uppercase;color:#756e93;text-align:center;margin:6px 0 8px;">Try a starter</div>',
+        unsafe_allow_html=True,
+    )
+    cols = st.columns(2)
+    for i, (emoji, text) in enumerate(ui.EXAMPLES):
+        if cols[i % 2].button(f"{emoji}  {text}", key=f"ex_{i}", use_container_width=True):
+            ss.pending_prompt = text
+            st.rerun()
+
+
+# --- replay transcript ----------------------------------------------------
 for turn in ss.transcript:
-    with st.chat_message(turn["role"]):
+    with st.chat_message(turn["role"], avatar=_avatar(turn["role"])):
         if turn.get("steps"):
             _render_steps(turn["steps"])
         st.markdown(turn["text"])
 
 
-prompt = st.chat_input("Tell me what to change in OBS…")
+# --- input + run ----------------------------------------------------------
+typed = st.chat_input("Tell me what to change in OBS…")
+prompt = typed or ss.pop("pending_prompt", None)
+
 if prompt:
     if ss.controller is None:
-        st.error("Connect to OBS first (sidebar).")
+        st.toast("Connect to OBS first (sidebar).", icon="🔌")
         st.stop()
     if not api_key:
-        st.error(f"Enter your {'Anthropic' if provider == 'claude' else 'OpenAI'} API key in the sidebar.")
+        st.toast(f"Add your {'Anthropic' if provider == 'claude' else 'OpenAI'} API key in the sidebar.", icon="🔑")
         st.stop()
 
     ss.transcript.append({"role": "user", "text": prompt, "steps": []})
-    with st.chat_message("user"):
+    with st.chat_message("user", avatar=USER_AVATAR):
         st.markdown(prompt)
 
     history_key = "history_claude" if provider == "claude" else "history_openai"
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
         status = st.status("Working with OBS…", expanded=True)
 
         def on_step(step):
@@ -179,3 +196,8 @@ if prompt:
             msg = f"**Error:** {e}"
             st.error(msg)
             ss.transcript.append({"role": "assistant", "text": msg, "steps": []})
+    st.rerun()
+
+
+# --- footer ---------------------------------------------------------------
+st.markdown(ui.footer_html(__version__), unsafe_allow_html=True)

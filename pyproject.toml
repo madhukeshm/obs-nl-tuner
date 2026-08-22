@@ -1,6 +1,6 @@
 [project]
 name = "obs-tune"
-version = "0.1.0"
+version = "1.0.0"
 description = "Tune OBS Studio with natural language, powered by Claude or ChatGPT and obs-websocket v5."
 readme = "README.md"
 requires-python = ">=3.12"
