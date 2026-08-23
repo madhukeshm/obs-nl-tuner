@@ -2,156 +2,90 @@
 <html>
 <head>
 <meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { width: 1200px; height: 630px; }
   body {
-    font-family: -apple-system, "Segoe UI", "Inter", Roboto, sans-serif;
-    background:
-      radial-gradient(900px 500px at 82% -8%, rgba(124,109,242,.30), transparent 60%),
-      radial-gradient(700px 460px at 8% 112%, rgba(16,163,127,.16), transparent 60%),
-      linear-gradient(160deg, #0d1220 0%, #121a2e 55%, #0b0f1b 100%);
-    color: #eef2fb; overflow: hidden; position: relative;
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    background: #F5F1E7; color: #1E1D1A; position: relative; overflow: hidden;
   }
-  body::before {
-    content: ""; position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(1000px 600px at 40% 40%, #000 30%, transparent 80%);
-  }
-  .grid { position: relative; height: 100%; display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; }
-  .left { padding: 0 0 0 72px; }
-  .kicker {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-size: 15px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #a6b4d8;
-  }
-  .kicker .dot { width: 9px; height: 9px; border-radius: 50%; background: #7c6df2; box-shadow: 0 0 14px #7c6df2; }
-  h1 {
-    margin-top: 22px; font-size: 68px; line-height: 1.02; font-weight: 800; letter-spacing: -.02em;
-    background: linear-gradient(92deg, #ffffff 32%, #c9d3ef 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .sub { margin-top: 20px; font-size: 24px; color: #b7c2df; font-weight: 500; max-width: 460px; line-height: 1.4; }
-  .sub b { color: #fff; font-weight: 700; }
-  .pills { margin-top: 30px; display: flex; align-items: center; gap: 11px; }
-  .pill {
-    display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #cdd6ee;
-    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); padding: 7px 13px; border-radius: 999px;
-  }
-  .pill .d { width: 10px; height: 10px; border-radius: 50%; }
-  .art { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
-  svg { width: 560px; height: 560px; overflow: visible; }
+  .toprule { position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, #1F6E5B, #5FBBA1 60%, rgba(95,187,161,0)); }
+  .grid { height: 100%; display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 40px; padding: 0 72px; }
+
+  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 14px; letter-spacing: .2em;
+    text-transform: uppercase; color: #6B665B; }
+  h1 { font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 60px; line-height: 1.02;
+    letter-spacing: -.015em; margin-top: 20px; color: #1E1D1A; }
+  .sub { margin-top: 20px; font-size: 23px; line-height: 1.4; color: #55503f; max-width: 20em; }
+  .sub b { color: #1E1D1A; font-weight: 600; }
+  .pills { margin-top: 28px; display: flex; gap: 10px; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #3a362d;
+    background: #FBF8F1; border: 1px solid #E1D9C7; padding: 8px 15px; border-radius: 999px; }
+  .pill .d { width: 9px; height: 9px; border-radius: 50%; }
+
+  .stage { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .card { background: #FBF8F1; border: 1px solid #E1D9C7; border-radius: 16px; padding: 16px 20px;
+    box-shadow: 0 14px 34px rgba(30,29,26,.09); width: 340px; }
+  .card .lbl { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .16em;
+    text-transform: uppercase; color: #8a8474; }
+  .card .prompt { font-family: "JetBrains Mono", monospace; font-size: 20px; color: #1E1D1A; margin-top: 8px; }
+  .arrow { color: #1F6E5B; font-size: 22px; line-height: 1; }
+  .card.result { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; align-items: center; gap: 12px; font-size: 16.5px; color: #2b2822; }
+  .tick { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: #E6EFEA;
+    border: 1px solid #bcd8ce; display: flex; align-items: center; justify-content: center; }
+  .wave { margin-top: 20px; display: flex; align-items: flex-end; gap: 5px; height: 40px; }
+  .wave i { width: 6px; border-radius: 3px; background: #cdc6b4; }
 </style>
 </head>
 <body>
+  <div class="toprule"></div>
   <div class="grid">
     <div class="left">
-      <span class="kicker"><span class="dot"></span>Open source · MIT · obs-websocket v5</span>
+      <div class="eyebrow">Studio control · obs-websocket v5</div>
       <h1>OBS Natural-<br>Language Tuner</h1>
-      <p class="sub">Describe what you want. <b>Claude</b> or <b>ChatGPT</b> tunes OBS for you.</p>
+      <p class="sub">Describe what you want. <b>Claude</b> or <b>ChatGPT</b> tunes OBS Studio for you.</p>
       <div class="pills">
-        <span class="pill"><span class="d" style="background:#d97757;box-shadow:0 0 10px #d97757"></span>Claude</span>
-        <span class="pill"><span class="d" style="background:#10a37f;box-shadow:0 0 10px #10a37f"></span>ChatGPT</span>
+        <span class="pill"><span class="d" style="background:#C2603E"></span>Claude</span>
+        <span class="pill"><span class="d" style="background:#2E9E7C"></span>ChatGPT</span>
       </div>
     </div>
 
-    <div class="art">
-      <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="mic" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#9d90ff"/>
-            <stop offset="1" stop-color="#6d5cf2"/>
-          </linearGradient>
-          <linearGradient id="micdark" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#7c6df2"/>
-            <stop offset="1" stop-color="#5b4ae0"/>
-          </linearGradient>
-          <radialGradient id="spot" cx="50%" cy="45%" r="55%">
-            <stop offset="0" stop-color="#ffffff" stop-opacity=".14"/>
-            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-          </radialGradient>
-          <linearGradient id="wand" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#ffd97a"/>
-            <stop offset="1" stop-color="#f5b64b"/>
-          </linearGradient>
-        </defs>
-
-        <!-- stage spotlight -->
-        <ellipse cx="280" cy="270" rx="250" ry="205" fill="url(#spot)"/>
-        <ellipse cx="280" cy="452" rx="150" ry="30" fill="#000" opacity=".22"/>
-
-        <!-- speech bubble -->
-        <g>
-          <rect x="24" y="70" width="196" height="74" rx="24" fill="#141b2e" stroke="#efeaff" stroke-width="4"/>
-          <path d="M70 142 L60 178 L104 146 Z" fill="#141b2e" stroke="#efeaff" stroke-width="4" stroke-linejoin="round"/>
-          <text x="46" y="104" font-family="'SF Mono',Menlo,monospace" font-size="20" fill="#eaf0ff">"clean up</text>
-          <text x="46" y="130" font-family="'SF Mono',Menlo,monospace" font-size="20" fill="#eaf0ff">my mic"</text>
-        </g>
-
-        <!-- ==== noise (before) : jagged, dissolving ==== -->
-        <g stroke="#ff8a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-          <path d="M70 300 l16 -30 l16 34 l16 -40 l16 42 l16 -26" opacity=".9"/>
-          <path d="M96 356 l14 -22 l14 24 l14 -26" opacity=".5"/>
-        </g>
-        <circle cx="86" cy="250" r="8" fill="#ff8a5c" opacity=".7"/>
-        <circle cx="150" cy="360" r="6" fill="#ff8a5c" opacity=".45"/>
-
-        <!-- ==== clean wave (after) : smooth ==== -->
-        <path d="M392 296 q22 -46 44 0 q22 46 44 0 q22 -46 44 0" stroke="#34d3a6" stroke-width="8"
-              stroke-linecap="round" fill="none"/>
-        <path d="M405 340 q18 -30 36 0 q18 30 36 0" stroke="#34d3a6" stroke-width="6" stroke-linecap="round" fill="none" opacity=".55"/>
-
-        <!-- ==== microphone character ==== -->
-        <g stroke="#efeaff" stroke-width="6" stroke-linejoin="round">
-          <!-- base + stand -->
-          <ellipse cx="280" cy="452" rx="92" ry="22" fill="#3a3168"/>
-          <rect x="266" y="360" width="28" height="80" rx="10" fill="#4a3f86"/>
-          <!-- body -->
-          <rect x="205" y="150" width="150" height="228" rx="72" fill="url(#mic)"/>
-          <!-- grille panel -->
-          <rect x="224" y="172" width="112" height="96" rx="46" fill="url(#micdark)" stroke="none"/>
-        </g>
-        <!-- grille lines -->
-        <g stroke="#efeaff" stroke-width="4.5" stroke-linecap="round" opacity=".55">
-          <line x1="238" y1="196" x2="322" y2="196"/>
-          <line x1="234" y1="216" x2="326" y2="216"/>
-          <line x1="238" y1="236" x2="322" y2="236"/>
-        </g>
-        <!-- face -->
-        <g>
-          <ellipse cx="256" cy="312" rx="15" ry="17" fill="#fff"/>
-          <ellipse cx="304" cy="312" rx="15" ry="17" fill="#fff"/>
-          <circle cx="259" cy="315" r="7" fill="#241a4d"/>
-          <circle cx="307" cy="315" r="7" fill="#241a4d"/>
-          <circle cx="256.5" cy="311" r="2.4" fill="#fff"/>
-          <circle cx="304.5" cy="311" r="2.4" fill="#fff"/>
-          <!-- blush -->
-          <ellipse cx="234" cy="336" rx="12" ry="7" fill="#ff9ec2" opacity=".85"/>
-          <ellipse cx="326" cy="336" rx="12" ry="7" fill="#ff9ec2" opacity=".85"/>
-          <!-- smile -->
-          <path d="M262 340 q18 22 36 0" stroke="#241a4d" stroke-width="6" stroke-linecap="round" fill="none"/>
-        </g>
-
-        <!-- ==== AI sparkle wand ==== -->
-        <g stroke="#efeaff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
-          <line x1="470" y1="120" x2="410" y2="176" stroke="url(#wand)" stroke-width="12"/>
-          <path d="M400 150 l10 22 l24 6 l-18 17 l4 25 l-22 -12 l-22 12 l4 -25 l-18 -17 l24 -6 z"
-                fill="url(#wand)"/>
-        </g>
-
-        <!-- sparkles -->
-        <g fill="#fff">
-          <path d="M360 210 l4 12 l12 4 l-12 4 l-4 12 l-4 -12 l-12 -4 l12 -4 z" opacity=".95"/>
-          <path d="M338 268 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3 z" opacity=".8"/>
-          <path d="M392 250 l2.5 7 l7 2.5 l-7 2.5 l-2.5 7 l-2.5 -7 l-7 -2.5 l7 -2.5 z" opacity=".7"/>
-        </g>
-        <g fill="#9d90ff">
-          <path d="M150 210 l3 9 l9 3 l-9 3 l-3 9 l-3 -9 l-9 -3 l9 -3 z" opacity=".9"/>
-        </g>
-      </svg>
+    <div class="right">
+      <div class="stage">
+        <div class="card">
+          <div class="lbl">you type</div>
+          <div class="prompt">"clean up my mic"</div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="card result">
+          <div class="row">
+            <span class="tick"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.5 L5 9 L10 3" stroke="#1F6E5B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Noise Suppression · Gate · EQ
+          </div>
+          <div class="row">
+            <span class="tick"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.5 L5 9 L10 3" stroke="#1F6E5B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Output 1920×1080 · 60 fps
+          </div>
+          <div class="wave" id="wave"></div>
+        </div>
+      </div>
     </div>
   </div>
+  <script>
+    // build a tidy waveform; a few teal accent bars
+    const heights = [10,18,26,14,32,22,30,12,24,18,12,20,28,16,22];
+    const w = document.getElementById('wave');
+    heights.forEach((h,i) => {
+      const b = document.createElement('i');
+      b.style.height = h + 'px';
+      if (i===4 || i===6 || i===12) b.style.background = '#1F6E5B';
+      w.appendChild(b);
+    });
+  </script>
 </body>
 </html>

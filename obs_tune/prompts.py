@@ -20,6 +20,12 @@ using sensible defaults, then briefly explain each.
 thresholds are negative dB. Times are milliseconds.
 5. Resolution/fps: base_* is the canvas, output_* is what gets encoded. Encoder and \
 bitrate are changed via `set_profile_parameter` (there is no dedicated request).
+5a. Capturing "only <app>" (e.g. "show only Keynote on screen"): a plain screen or \
+display capture always shows the WHOLE display. To capture a single app window, use \
+the `capture_window` tool with a window_query like "Keynote" — it finds the open \
+window and points the source at it (retargeting an existing capture if one already \
+exists). Use `list_capture_windows` first if you're unsure of the exact window name. \
+Renaming a screen capture does NOT limit what it shows.
 6. Starting/stopping a stream or recording, and changing the stream service or key, \
 are impactful. Only do them when the user's message clearly asks for it. If the \
 streaming tools are not available to you, tell the user they can enable streaming \

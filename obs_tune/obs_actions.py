@@ -312,6 +312,107 @@ class OBSController:
         )
         return {"created": input_name, "kind": input_kind, "sceneItemId": r.get("sceneItemId")}
 
+    def get_input_settings(self, input_name: str) -> dict[str, Any]:
+        r = self._req("GetInputSettings", {"inputName": input_name})
+        return {"input": input_name, "kind": r.get("inputKind"), "settings": r.get("inputSettings", {})}
+
+    def set_input_settings(
+        self, input_name: str, settings: dict[str, Any], overlay: bool = True
+    ) -> dict[str, Any]:
+        self._req(
+            "SetInputSettings",
+            {"inputName": input_name, "inputSettings": settings, "overlay": overlay},
+        )
+        return {"input": input_name, "updated": sorted(settings.keys())}
+
+    def _window_items(self, input_name: str) -> list[dict[str, Any]]:
+        r = self._req(
+            "GetInputPropertiesListPropertyItems",
+            {"inputName": input_name, "propertyName": "window"},
+        )
+        return [
+            {"name": it.get("itemName"), "id": it.get("itemValue")}
+            for it in r.get("propertyItems", [])
+            if (it.get("itemName") or "").strip() and it.get("itemEnabled", True)
+        ]
+
+    def list_capture_windows(self) -> list[dict[str, Any]]:
+        """Enumerate the on-screen windows OBS can capture (name + volatile id).
+
+        Uses a temporary, hidden window-capture input to read the current window
+        list, then removes it. Window ids change between sessions, so this must be
+        called fresh right before targeting a window.
+        """
+        scene = self._req("GetSceneList").get("currentProgramSceneName")
+        tmp = "__obs_tune_probe__"
+        try:
+            self._req(
+                "CreateInput",
+                {"sceneName": scene, "inputName": tmp, "inputKind": "window_capture",
+                 "inputSettings": {}, "sceneItemEnabled": False},
+            )
+            return self._window_items(tmp)
+        finally:
+            try:
+                self._req("RemoveInput", {"inputName": tmp})
+            except OBSError:
+                pass
+
+    def capture_window(
+        self, window_query: str, input_name: str, scene_name: str | None = None
+    ) -> dict[str, Any]:
+        """Capture a single application window (e.g. 'Keynote') rather than the whole screen.
+
+        Finds an open window whose name contains ``window_query`` (case-insensitive)
+        and points ``input_name`` at it — retargeting an existing window/screen
+        capture in place, or creating a new window capture if it doesn't exist.
+        """
+        q = window_query.lower()
+        existing = next((i for i in self.list_inputs() if i["name"] == input_name), None)
+
+        if existing is not None:
+            kind = existing["kind"]
+            if kind not in ("window_capture", "screen_capture"):
+                raise OBSError(
+                    f"'{input_name}' is a {kind}, not a window/screen capture — "
+                    "create a new window capture instead."
+                )
+            wins = self._window_items(input_name)
+            match = next((w for w in wins if q in (w["name"] or "").lower()), None)
+            if match is None:
+                raise OBSError(
+                    f"No open window matches '{window_query}'. Open windows: "
+                    + ", ".join(w["name"] for w in wins)
+                )
+            settings: dict[str, Any] = {"window": match["id"]}
+            if kind == "screen_capture":
+                settings["type"] = 1  # 0=display, 1=window, 2=application
+            self.set_input_settings(input_name, settings)
+            return {"action": "retargeted", "input": input_name, "kind": kind,
+                    "window": match["name"], "windowId": match["id"]}
+
+        # Create a fresh window capture, read its own window list, then point it.
+        scene = scene_name or self._req("GetSceneList").get("currentProgramSceneName")
+        self._req(
+            "CreateInput",
+            {"sceneName": scene, "inputName": input_name, "inputKind": "window_capture",
+             "inputSettings": {}, "sceneItemEnabled": True},
+        )
+        wins = self._window_items(input_name)
+        match = next((w for w in wins if q in (w["name"] or "").lower()), None)
+        if match is None:
+            try:
+                self._req("RemoveInput", {"inputName": input_name})
+            except OBSError:
+                pass
+            raise OBSError(
+                f"No open window matches '{window_query}'. Open windows: "
+                + ", ".join(w["name"] for w in wins)
+            )
+        self.set_input_settings(input_name, {"window": match["id"]})
+        return {"action": "created", "input": input_name, "scene": scene,
+                "window": match["name"], "windowId": match["id"]}
+
     # -- streaming & recording ---------------------------------------------
     def get_stream_status(self) -> dict[str, Any]:
         r = self._req("GetStreamStatus")

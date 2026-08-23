@@ -199,6 +199,49 @@ _CATALOGUE: list[dict[str, Any]] = [
         ),
     },
     {
+        "name": "list_capture_windows",
+        "description": (
+            "List the on-screen application windows OBS can capture, as {name, id}. Window names look "
+            "like '[Keynote] My Slides'. Call this to find the right window before capturing one. Ids are "
+            "volatile — always list right before targeting."
+        ),
+        "parameters": _obj({}),
+        "handler": lambda c: c.list_capture_windows(),
+    },
+    {
+        "name": "capture_window",
+        "description": (
+            "Capture ONLY a specific application window instead of the whole screen — e.g. 'show only "
+            "Keynote'. Give a window_query (substring of the window/app name, like 'Keynote') and a "
+            "source name. Retargets that source if it already exists (even a whole-screen capture), or "
+            "creates a new window capture. This is the correct tool for 'capture just <app>' requests — a "
+            "plain screen/display capture always shows the entire display."
+        ),
+        "parameters": _obj(
+            {"window_query": _STR, "input_name": _STR, "scene_name": _STR},
+            ["window_query", "input_name"],
+        ),
+        "handler": lambda c, window_query, input_name, scene_name=None: c.capture_window(
+            window_query, input_name, scene_name
+        ),
+    },
+    {
+        "name": "get_input_settings",
+        "description": "Get an input's kind and current settings dict — useful to inspect a capture source before changing it.",
+        "parameters": _obj({"input_name": _STR}, ["input_name"]),
+        "handler": lambda c, input_name: c.get_input_settings(input_name),
+    },
+    {
+        "name": "set_input_settings",
+        "description": (
+            "Set (overlay) settings on an existing input. Only the keys you pass change. For a macOS "
+            "screen_capture: type 0=whole display, 1=single window (also set 'window' id), 2=application "
+            "(also set 'application'). Prefer capture_window for window capture."
+        ),
+        "parameters": _obj({"input_name": _STR, "settings": {"type": "object"}}, ["input_name", "settings"]),
+        "handler": lambda c, input_name, settings: c.set_input_settings(input_name, settings),
+    },
+    {
         "name": "get_stream_service",
         "description": "Get the current streaming service config (server/service). The stream key is redacted.",
         "parameters": _obj({}),

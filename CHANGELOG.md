@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format loosely
 follows [Keep a Changelog](https://keepachangelog.com/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] — 2026-08-23
+
+### Added
+- **Single-window / application capture.** New tools `capture_window` (capture
+  only a named app window, e.g. "show only Keynote"), `list_capture_windows`,
+  `get_input_settings`, and `set_input_settings`. The model can now target a
+  specific window instead of the whole display.
+
+### Fixed
+- "Capture only <app>" requests previously produced a whole-screen capture that
+  was merely *renamed* — the model had no way to enumerate windows or change a
+  source's settings. It now retargets/creates a proper window capture.
+
+### Changed
+- Re-themed the project visuals (header image, architecture diagram, and the
+  writeup) to the professional ivory / ink / teal identity, matching the app.
+
 ## [1.0.0] — 2026-08-22
 
 First stable release.
